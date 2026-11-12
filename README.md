@@ -63,8 +63,8 @@ scripts/                  Automatitzacions reproduïbles
 | Fase                     | Estat      | Evidència                                                                                  | Bloquejos | Pròxima acció                                        |
 | ------------------------ | ---------- | ------------------------------------------------------------------------------------------ | --------- | ---------------------------------------------------- |
 | 0. Inicialització        | Completada | Instal·lació, format, lint, typecheck, tests, build, Compose i endpoints mínims verificats |           | Revisar el model de domini abans d'iniciar la fase 1 |
-| 1. Domini                | Pendent    |                                                                                            |           | Definir vocabulari, unitats, mètriques i desempats   |
-| 2. Motor FIFO            | Pendent    |                                                                                            |           |                                                      |
+| 1. Domini                | Completada | Contractes Zod, regles documentades, exemples JSON i proves automatitzades                 |           | Iniciar el motor FIFO quan s'aprovi aquesta fase     |
+| 2. Motor FIFO            | Pendent    |                                                                                            |           | Implementar temps virtual i execució no preemptiva   |
 | 3. Polítiques            | Pendent    |                                                                                            |           |                                                      |
 | 4. Generador i mètriques | Pendent    |                                                                                            |           |                                                      |
 | 5. API i persistència    | Pendent    |                                                                                            |           |                                                      |

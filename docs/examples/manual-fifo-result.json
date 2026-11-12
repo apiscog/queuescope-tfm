@@ -1,0 +1,96 @@
+{
+  "runId": "run-fifo-manual-001",
+  "scenarioId": "scenario-manual-001",
+  "policy": { "id": "fifo" },
+  "engineVersion": "manual-reference-v1",
+  "taskResults": [
+    {
+      "taskId": "task-a",
+      "workerId": "worker-1",
+      "initialPriority": 1,
+      "arrivalTime": 0,
+      "serviceStartTime": 0,
+      "completionTime": 4,
+      "waitingTime": 0,
+      "turnaroundTime": 4
+    },
+    {
+      "taskId": "task-b",
+      "workerId": "worker-1",
+      "initialPriority": 3,
+      "arrivalTime": 1,
+      "serviceStartTime": 4,
+      "completionTime": 6,
+      "waitingTime": 3,
+      "turnaroundTime": 5
+    },
+    {
+      "taskId": "task-c",
+      "workerId": "worker-1",
+      "initialPriority": 1,
+      "arrivalTime": 1,
+      "serviceStartTime": 6,
+      "completionTime": 7,
+      "waitingTime": 5,
+      "turnaroundTime": 6
+    }
+  ],
+  "metrics": {
+    "completedTaskCount": 3,
+    "simulationSpan": 7,
+    "throughput": 0.42857142857142855,
+    "workerUtilization": 1,
+    "waitingTime": {
+      "sampleSize": 3,
+      "mean": 2.6666666666666665,
+      "median": 3,
+      "p95": 5,
+      "maximum": 5
+    },
+    "turnaroundTime": {
+      "sampleSize": 3,
+      "mean": 5,
+      "median": 5,
+      "p95": 6,
+      "maximum": 6
+    },
+    "byInitialPriority": [
+      {
+        "initialPriority": 1,
+        "completedTaskCount": 2,
+        "waitingTime": {
+          "sampleSize": 2,
+          "mean": 2.5,
+          "median": 2.5,
+          "p95": 5,
+          "maximum": 5
+        },
+        "turnaroundTime": {
+          "sampleSize": 2,
+          "mean": 5,
+          "median": 5,
+          "p95": 6,
+          "maximum": 6
+        }
+      },
+      {
+        "initialPriority": 3,
+        "completedTaskCount": 1,
+        "waitingTime": {
+          "sampleSize": 1,
+          "mean": 3,
+          "median": 3,
+          "p95": 3,
+          "maximum": 3
+        },
+        "turnaroundTime": {
+          "sampleSize": 1,
+          "mean": 5,
+          "median": 5,
+          "p95": 5,
+          "maximum": 5
+        }
+      }
+    ]
+  }
+}

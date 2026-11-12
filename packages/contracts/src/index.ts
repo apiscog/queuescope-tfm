@@ -1,1 +1,2 @@
-export const CONTRACTS_PACKAGE_VERSION = '0.0.0';
+export * from './model.js';
+export * from './schemas.js';

@@ -16,3 +16,4 @@ Thumbs.db
 infra/postgres-data/
 playwright-report/
 test-results/
+docs/local/

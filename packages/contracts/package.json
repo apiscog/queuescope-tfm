@@ -14,7 +14,11 @@
     "test": "vitest run --passWithNoTests",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
+  "dependencies": {
+    "zod": "latest"
+  },
   "devDependencies": {
+    "@types/node": "latest",
     "vitest": "latest"
   }
 }
