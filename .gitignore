@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+.vite/
+.turbo/
+.env
+.env.*
+!.env.example
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+infra/postgres-data/
+playwright-report/
+test-results/
