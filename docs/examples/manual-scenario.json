@@ -1,0 +1,34 @@
+{
+  "id": "scenario-manual-001",
+  "name": "Escenari manual verificable",
+  "timeUnit": "tick",
+  "workers": { "count": 1 },
+  "tasks": [
+    {
+      "id": "task-a",
+      "sequence": 0,
+      "type": "standard",
+      "arrivalTime": 0,
+      "serviceDuration": 4,
+      "initialPriority": 1
+    },
+    {
+      "id": "task-b",
+      "sequence": 1,
+      "type": "urgent",
+      "arrivalTime": 1,
+      "serviceDuration": 2,
+      "initialPriority": 3
+    },
+    {
+      "id": "task-c",
+      "sequence": 2,
+      "type": "standard",
+      "arrivalTime": 1,
+      "serviceDuration": 1,
+      "initialPriority": 1
+    }
+  ],
+  "source": { "kind": "manual" },
+  "createdAt": "2026-11-12T20:00:00.000Z"
+}
