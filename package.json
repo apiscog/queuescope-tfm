@@ -1,0 +1,32 @@
+{
+  "name": "queuescope-tfm",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Plataforma web per simular càrregues de tasques asíncrones i comparar polítiques de planificació.",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=24 <25",
+    "npm": ">=11"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "dev": "npm run dev --workspaces --if-present",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --max-warnings=0",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "devDependencies": {
+    "@eslint/js": "latest",
+    "eslint": "latest",
+    "globals": "latest",
+    "prettier": "latest",
+    "typescript": "latest",
+    "typescript-eslint": "latest"
+  }
+}
