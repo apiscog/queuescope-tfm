@@ -1,8 +1,8 @@
-# Motor de simulació FIFO
+# Motor de simulació amb temps virtual
 
 ## Objectiu i abast
 
-El paquet `@queuescope/simulation-engine` executa escenaris sintètics amb temps virtual. En aquesta fase implementa FIFO com a primera política i produeix un resultat individual per tasca. Encara no calcula mètriques agregades ni executa les altres polítiques.
+El paquet `@queuescope/simulation-engine` executa escenaris sintètics amb temps virtual. FIFO es va implementar com a primera política i el motor produeix un resultat individual per tasca. Les polítiques incorporades posteriorment es descriuen a `docs/architecture/scheduling-policies.md`. El motor encara no calcula mètriques agregades.
 
 El motor és un mòdul TypeScript independent. Només depèn dels contractes compartits i no importa NestJS, React, clients de base de dades ni tipus HTTP.
 

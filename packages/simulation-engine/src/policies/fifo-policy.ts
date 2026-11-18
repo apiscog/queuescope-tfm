@@ -18,7 +18,7 @@ export function compareTasksByFifo(
 }
 
 export class FifoPolicy implements SchedulingPolicy {
-  readonly id = 'fifo' as const;
+  readonly configuration = { id: 'fifo' } as const;
 
   selectNextTask(
     readyTasks: readonly TaskDefinition[],
