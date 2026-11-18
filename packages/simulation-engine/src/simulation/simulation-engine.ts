@@ -15,7 +15,10 @@ import type {
   TaskArrivalEvent,
   TaskCompletionEvent,
 } from '../events/simulation-event.js';
-import type { SchedulingPolicy } from '../policies/scheduling-policy.js';
+import {
+  policyConfigurationsEqual,
+  type SchedulingPolicy,
+} from '../policies/scheduling-policy.js';
 
 type TaskLifecycleState = 'scheduled' | 'ready' | 'active' | 'completed';
 
@@ -48,9 +51,11 @@ function calculateCompletionTime(
 export class SimulationEngine {
   run(input: RunInput, policy: SchedulingPolicy): EngineRunResult {
     const validatedInput = RunInputSchema.parse(input);
-    if (validatedInput.policy.id !== policy.id) {
+    if (
+      !policyConfigurationsEqual(validatedInput.policy, policy.configuration)
+    ) {
       throw new Error(
-        `Input policy ${validatedInput.policy.id} does not match implementation ${policy.id}`,
+        `Input policy ${JSON.stringify(validatedInput.policy)} does not match implementation ${JSON.stringify(policy.configuration)}`,
       );
     }
 
