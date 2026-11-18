@@ -14,7 +14,11 @@
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
+  "dependencies": {
+    "@queuescope/contracts": "*"
+  },
   "devDependencies": {
+    "@types/node": "latest",
     "vitest": "latest"
   }
 }
