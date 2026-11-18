@@ -46,18 +46,59 @@ export const WorkerConfigSchema = z.strictObject({
   count: z.number().int().min(1).max(MAX_WORKERS),
 });
 
-const GenerationParameterValueSchema = z.union([
-  z.string(),
-  z.number().finite(),
-  z.boolean(),
-]);
+export const IntegerRangeSchema = z
+  .strictObject({
+    minimum: z.number().int().min(0).max(MAX_RANDOM_SEED),
+    maximum: z.number().int().min(0).max(MAX_RANDOM_SEED),
+  })
+  .refine((range) => range.minimum <= range.maximum, {
+    message: 'Range minimum must be less than or equal to maximum',
+    path: ['maximum'],
+  });
+
+const PriorityRangeSchema = z
+  .strictObject({
+    minimum: PrioritySchema,
+    maximum: PrioritySchema,
+  })
+  .refine((range) => range.minimum <= range.maximum, {
+    message: 'Priority minimum must be less than or equal to maximum',
+    path: ['maximum'],
+  });
+
+export const WorkloadGenerationParametersSchema = z
+  .strictObject({
+    taskCount: z.number().int().min(0).max(MAX_SCENARIO_TASKS),
+    workerCount: z.number().int().min(1).max(MAX_WORKERS),
+    arrivalTimeRange: IntegerRangeSchema,
+    serviceDurationRange: IntegerRangeSchema,
+    priorityRange: PriorityRangeSchema,
+    taskTypes: z.array(z.string().trim().min(1).max(50)).min(1).max(20),
+    seed: z.number().int().min(0).max(MAX_RANDOM_SEED),
+  })
+  .superRefine((parameters, context) => {
+    const uniqueTypes = new Set(parameters.taskTypes);
+    if (uniqueTypes.size !== parameters.taskTypes.length) {
+      context.addIssue({
+        code: 'custom',
+        message: 'Task types must be unique',
+        path: ['taskTypes'],
+      });
+    }
+  });
+
+export const GenerateScenarioInputSchema = z.strictObject({
+  id: IdentifierSchema,
+  name: z.string().trim().min(1).max(120),
+  createdAt: z.string().datetime({ offset: true }),
+  parameters: WorkloadGenerationParametersSchema,
+});
 
 export const ScenarioSourceSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('manual') }),
   z.strictObject({
     kind: z.literal('generated'),
-    seed: z.number().int().min(0).max(MAX_RANDOM_SEED),
-    parameters: z.record(z.string(), GenerationParameterValueSchema),
+    parameters: WorkloadGenerationParametersSchema,
   }),
 ]);
 

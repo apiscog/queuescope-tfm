@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 import {
+  GenerateScenarioInputSchema,
   PolicyConfigurationSchema,
   RunMetricsSchema,
   RunResultSchema,
@@ -54,6 +55,51 @@ describe('ScenarioSchema', () => {
     };
 
     expect(ScenarioSchema.safeParse(invalidScenario).success).toBe(false);
+  });
+});
+
+describe('GenerateScenarioInputSchema', () => {
+  const validInput = {
+    id: 'scenario-generated-001',
+    name: 'Escenari generat',
+    createdAt: '2026-11-18T20:00:00.000Z',
+    parameters: {
+      taskCount: 20,
+      workerCount: 3,
+      arrivalTimeRange: { minimum: 0, maximum: 30 },
+      serviceDurationRange: { minimum: 1, maximum: 8 },
+      priorityRange: { minimum: 0, maximum: 5 },
+      taskTypes: ['email', 'report'],
+      seed: 12_345,
+    },
+  };
+
+  it('accepts bounded generation parameters', () => {
+    expect(GenerateScenarioInputSchema.parse(validInput)).toEqual(validInput);
+  });
+
+  it('rejects inverted ranges', () => {
+    const invalidInput = {
+      ...validInput,
+      parameters: {
+        ...validInput.parameters,
+        arrivalTimeRange: { minimum: 5, maximum: 4 },
+      },
+    };
+
+    expect(GenerateScenarioInputSchema.safeParse(invalidInput).success).toBe(
+      false,
+    );
+  });
+
+  it('rejects duplicate or empty task types', () => {
+    for (const taskTypes of [['email', 'email'], []]) {
+      const result = GenerateScenarioInputSchema.safeParse({
+        ...validInput,
+        parameters: { ...validInput.parameters, taskTypes },
+      });
+      expect(result.success).toBe(false);
+    }
   });
 });
 

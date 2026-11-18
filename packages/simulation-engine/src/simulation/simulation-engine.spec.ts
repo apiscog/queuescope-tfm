@@ -132,7 +132,7 @@ describe('SimulationEngine with FIFO', () => {
 
     const result = runFifoSimulation(input);
 
-    expect(result.taskResults).toEqual(expectedRun.taskResults);
+    expect(result).toEqual(expectedRun);
   });
 
   it('uses stable insertion order for simultaneous arrivals', () => {

@@ -12,22 +12,40 @@ export type {
 export { StrictPriorityPolicy } from './policies/strict-priority-policy.js';
 export { SimulationEngine } from './simulation/simulation-engine.js';
 
-import { RunInputSchema, type RunInput } from '@queuescope/contracts';
+import {
+  RunInputSchema,
+  RunResultSchema,
+  type RunInput,
+  type RunResult,
+} from '@queuescope/contracts';
 
-import type { EngineRunResult } from './domain/engine-run-result.js';
+export { generateScenario } from './generation/workload-generator.js';
+export { SeededRandom } from './generation/seeded-random.js';
+export { calculateRunMetrics } from './metrics/run-metrics.js';
+export { calculateStatisticalSummary } from './metrics/statistical-summary.js';
+import { calculateRunMetrics } from './metrics/run-metrics.js';
 import { createSchedulingPolicy } from './policies/policy-factory.js';
 import { SimulationEngine } from './simulation/simulation-engine.js';
 
-export const SIMULATION_ENGINE_VERSION = '0.2.0';
+export const SIMULATION_ENGINE_VERSION = '0.3.0';
 
-export function runSimulation(input: RunInput): EngineRunResult {
-  return new SimulationEngine().run(
-    input,
-    createSchedulingPolicy(input.policy),
+export function runSimulation(input: RunInput): RunResult {
+  const validatedInput = RunInputSchema.parse(input);
+  const engineResult = new SimulationEngine().run(
+    validatedInput,
+    createSchedulingPolicy(validatedInput.policy),
   );
+
+  return RunResultSchema.parse({
+    ...engineResult,
+    metrics: calculateRunMetrics(
+      validatedInput.scenario,
+      engineResult.taskResults,
+    ),
+  });
 }
 
-export function runFifoSimulation(input: RunInput): EngineRunResult {
+export function runFifoSimulation(input: RunInput): RunResult {
   const validatedInput = RunInputSchema.parse(input);
   if (validatedInput.policy.id !== 'fifo') {
     throw new Error('runFifoSimulation requires the FIFO policy');
