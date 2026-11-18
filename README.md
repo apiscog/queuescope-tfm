@@ -60,16 +60,16 @@ scripts/                  Automatitzacions reproduïbles
 
 ## Progrés
 
-| Fase                     | Estat      | Evidència                                                                                  | Bloquejos | Pròxima acció                                        |
-| ------------------------ | ---------- | ------------------------------------------------------------------------------------------ | --------- | ---------------------------------------------------- |
-| 0. Inicialització        | Completada | Instal·lació, format, lint, typecheck, tests, build, Compose i endpoints mínims verificats |           | Revisar el model de domini abans d'iniciar la fase 1 |
-| 1. Domini                | Completada | Contractes Zod, regles documentades, exemples JSON i proves automatitzades                 |           | Iniciar el motor FIFO quan s'aprovi aquesta fase     |
-| 2. Motor FIFO            | Pendent    |                                                                                            |           | Implementar temps virtual i execució no preemptiva   |
-| 3. Polítiques            | Pendent    |                                                                                            |           |                                                      |
-| 4. Generador i mètriques | Pendent    |                                                                                            |           |                                                      |
-| 5. API i persistència    | Pendent    |                                                                                            |           |                                                      |
-| 6. Interfície funcional  | Pendent    |                                                                                            |           |                                                      |
-| 7. Visualització         | Pendent    |                                                                                            |           |                                                      |
-| 8. Qualitat              | Pendent    |                                                                                            |           |                                                      |
-| 9. Entrega               | Pendent    |                                                                                            |           |                                                      |
-| 10. Vídeo                | Pendent    |                                                                                            |           |                                                      |
+| Fase                     | Estat      | Evidència                                                                                  | Bloquejos | Pròxima acció                                     |
+| ------------------------ | ---------- | ------------------------------------------------------------------------------------------ | --------- | ------------------------------------------------- |
+| 0. Inicialització        | Completada | Instal·lació, format, lint, typecheck, tests, build, Compose i endpoints mínims verificats |           |                                                   |
+| 1. Domini                | Completada | Contractes Zod, regles documentades, exemples JSON i proves automatitzades                 |           |                                                   |
+| 2. Motor FIFO            | Completada | Temps virtual, cua d'esdeveniments, FIFO i 13 proves del motor                             |           | Iniciar les polítiques quan s'aprovi aquesta fase |
+| 3. Polítiques            | Pendent    |                                                                                            |           | Afegir prioritat estricta i envelliment           |
+| 4. Generador i mètriques | Pendent    |                                                                                            |           |                                                   |
+| 5. API i persistència    | Pendent    |                                                                                            |           |                                                   |
+| 6. Interfície funcional  | Pendent    |                                                                                            |           |                                                   |
+| 7. Visualització         | Pendent    |                                                                                            |           |                                                   |
+| 8. Qualitat              | Pendent    |                                                                                            |           |                                                   |
+| 9. Entrega               | Pendent    |                                                                                            |           |                                                   |
+| 10. Vídeo                | Pendent    |                                                                                            |           |                                                   |
