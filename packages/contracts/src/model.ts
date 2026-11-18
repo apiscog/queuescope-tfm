@@ -2,6 +2,8 @@ import type { z } from 'zod';
 
 import type {
   ComparisonResultSchema,
+  GenerateScenarioInputSchema,
+  IntegerRangeSchema,
   PolicyConfigurationSchema,
   PolicyIdSchema,
   PriorityMetricsSchema,
@@ -14,6 +16,7 @@ import type {
   TaskDefinitionSchema,
   TaskResultSchema,
   WorkerConfigSchema,
+  WorkloadGenerationParametersSchema,
 } from './schemas.js';
 
 export const VIRTUAL_TIME_UNIT = 'tick' as const;
@@ -28,6 +31,11 @@ export type PolicyId = z.infer<typeof PolicyIdSchema>;
 export type PolicyConfiguration = z.infer<typeof PolicyConfigurationSchema>;
 export type TaskDefinition = z.infer<typeof TaskDefinitionSchema>;
 export type WorkerConfig = z.infer<typeof WorkerConfigSchema>;
+export type IntegerRange = z.infer<typeof IntegerRangeSchema>;
+export type WorkloadGenerationParameters = z.infer<
+  typeof WorkloadGenerationParametersSchema
+>;
+export type GenerateScenarioInput = z.infer<typeof GenerateScenarioInputSchema>;
 export type ScenarioSource = z.infer<typeof ScenarioSourceSchema>;
 export type Scenario = z.infer<typeof ScenarioSchema>;
 export type RunInput = z.infer<typeof RunInputSchema>;

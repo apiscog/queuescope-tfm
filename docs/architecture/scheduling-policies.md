@@ -109,4 +109,4 @@ Les proves unitàries cobreixen:
 - factoria de polítiques
 - immutabilitat i determinisme entre execucions
 
-El paquet del motor conté 35 proves després d'aquesta fase. Les mètriques agregades i la generació sintètica continuen fora de l'abast actual.
+El paquet del motor contenia 35 proves en completar aquesta fase. La generació sintètica i les mètriques incorporades posteriorment es documenten a `docs/architecture/workload-generation-and-metrics.md`.

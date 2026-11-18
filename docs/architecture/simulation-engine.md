@@ -2,7 +2,7 @@
 
 ## Objectiu i abast
 
-El paquet `@queuescope/simulation-engine` executa escenaris sintètics amb temps virtual. FIFO es va implementar com a primera política i el motor produeix un resultat individual per tasca. Les polítiques incorporades posteriorment es descriuen a `docs/architecture/scheduling-policies.md`. El motor encara no calcula mètriques agregades.
+El paquet `@queuescope/simulation-engine` genera i executa escenaris sintètics amb temps virtual. El motor produeix resultats individuals per tasca i la seva entrada pública calcula les mètriques agregades. Les polítiques es descriuen a `docs/architecture/scheduling-policies.md` i la generació i les mètriques a `docs/architecture/workload-generation-and-metrics.md`.
 
 El motor és un mòdul TypeScript independent. Només depèn dels contractes compartits i no importa NestJS, React, clients de base de dades ni tipus HTTP.
 
@@ -16,9 +16,18 @@ packages/simulation-engine/src/
 ├── events/
 │   ├── future-event-queue.ts
 │   └── simulation-event.ts
+├── generation/
+│   ├── seeded-random.ts
+│   └── workload-generator.ts
+├── metrics/
+│   ├── run-metrics.ts
+│   └── statistical-summary.ts
 ├── policies/
+│   ├── aging-policy.ts
 │   ├── fifo-policy.ts
-│   └── scheduling-policy.ts
+│   ├── policy-factory.ts
+│   ├── scheduling-policy.ts
+│   └── strict-priority-policy.ts
 ├── simulation/
 │   └── simulation-engine.ts
 └── index.ts
@@ -80,9 +89,9 @@ La cua d'esdeveniments ordena per temps, tipus d'esdeveniment, seqüència de ta
 
 El motor valida l'entrada amb `RunInputSchema` i treballa amb estat intern propi. No modifica l'escenari rebut.
 
-## Resultat de la fase
+## Resultat públic
 
-`EngineRunResult` conté les dades de l'execució i un `TaskResult` per tasca:
+`EngineRunResult` és el resultat cru del bucle i conté un `TaskResult` per tasca:
 
 ```text
 EngineRunResult
@@ -93,10 +102,25 @@ EngineRunResult
 └── taskResults[]
 ```
 
-Les mètriques agregades del contracte final es calcularan en una fase posterior. Aquesta separació evita avançar funcionalitat i conserva les mesures individuals necessàries per verificar els càlculs futurs.
+La funció pública `runSimulation` completa aquesta informació amb `RunMetrics` i valida el `RunResult` final:
+
+```text
+RunInput
+   |
+   v
+SimulationEngine.run --> EngineRunResult
+   |
+   v
+calculateRunMetrics
+   |
+   v
+RunResultSchema --> RunResult
+```
+
+La separació conserva les mesures individuals necessàries per explicar cada agregat i evita barrejar fórmules estadístiques amb la gestió d'esdeveniments.
 
 ## Verificació
 
-Les proves cobreixen la cua d'esdeveniments, la política i el motor complet. Inclouen l'escenari buit, una tasca, arribades simultànies, més tasques que workers, workers ociosos, durades zero, determinisme, immutabilitat i absència de solapaments per worker.
+Les proves cobreixen la cua d'esdeveniments, les tres polítiques, el generador, les mètriques i el motor complet. Inclouen l'escenari buit, una tasca, arribades simultànies, més tasques que workers, workers ociosos, durades zero, determinisme, immutabilitat i absència de solapaments per worker.
 
-El motor també llegeix l'escenari i el resultat manual de `docs/examples/`. FIFO reprodueix exactament els temps d'inici, finalització, espera i turnaround calculats abans de la implementació.
+El motor també llegeix l'escenari i el resultat manual de `docs/examples/`. FIFO reprodueix el `RunResult` complet, inclosos els temps individuals i totes les mètriques calculades abans de la implementació.

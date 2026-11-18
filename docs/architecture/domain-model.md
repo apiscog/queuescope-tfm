@@ -73,4 +73,4 @@ Les mètriques agrupades utilitzen sempre la prioritat inicial. Així es pot obs
 
 `docs/examples/manual-scenario.json` conté tres tasques i un worker. La referència `docs/examples/manual-fifo-result.json` mostra el resultat FIFO calculat manualment. Les tasques s'executen en l'ordre A, B i C. Els temps d'espera són 0, 3 i 5 `tick`. Per tant, la mitjana és 8 dividit per 3, la mediana és 3 i el percentil 95 és 5.
 
-Aquest resultat és una referència per a les proves de les fases següents. No implica que el motor FIFO ja estigui implementat ni que una política sigui superior a una altra.
+Aquest resultat s'utilitza com a referència automatitzada del motor i del càlcul de mètriques. La coincidència valida un exemple controlat, però no implica que una política sigui superior a una altra.
