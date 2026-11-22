@@ -2,7 +2,7 @@
 
 QueueScope és una plataforma web per definir càrregues sintètiques de tasques asíncrones i comparar polítiques de planificació en condicions controlades i reproduïbles.
 
-El projecte és un monorepositori amb una API REST basada en NestJS, una aplicació web React i dos paquets TypeScript independents per al motor de simulació i els contractes compartits. El nucli actual ja pot generar càrregues reproduïbles, executar FIFO, prioritat estricta o prioritat amb envelliment i calcular mètriques agregades. La integració amb l'API i la persistència correspon a la fase següent.
+El projecte és un monorepositori amb una API REST basada en NestJS, una aplicació web React i dos paquets TypeScript independents per al motor de simulació i els contractes compartits. El nucli pot generar càrregues reproduïbles, executar FIFO, prioritat estricta o prioritat amb envelliment i calcular mètriques agregades. La fase 5 està en curs i ja permet guardar i consultar escenaris manuals a PostgreSQL.
 
 ## Requisits
 
@@ -15,10 +15,13 @@ La versió de Node està fixada a `.nvmrc` i `.node-version`. Amb `fnm`, es pot 
 ## Preparació de l'entorn
 
 1. Instal·la les dependències des de l'arrel amb `npm install`.
-2. Copia `.env.example` a un fitxer `.env` local i adapta els valors si cal. No versionis aquest fitxer.
+2. Copia `.env.example` a `apps/api/.env` i adapta els valors si cal. No versionis aquest fitxer.
 3. Inicia PostgreSQL amb `docker compose up -d postgres`.
-4. Executa l'API amb `npm run dev --workspace @queuescope/api`.
-5. Executa el frontend en una altra terminal amb `npm run dev --workspace @queuescope/web`.
+4. Aplica les migracions amb `npm run db:migrate --workspace @queuescope/api`.
+5. Executa l'API amb `npm run dev --workspace @queuescope/api`.
+6. Executa el frontend en una altra terminal amb `npm run dev --workspace @queuescope/web`.
+
+La primera prova manual de la fase 5 està explicada a `docs/architecture/api-and-persistence.md`. Per veure les taules i les files també es pot executar `npm run db:studio --workspace @queuescope/api`.
 
 | Servei         | Adreça                       |
 | -------------- | ---------------------------- |
@@ -60,16 +63,16 @@ scripts/                  Automatitzacions reproduïbles
 
 ## Progrés
 
-| Fase                     | Estat      | Evidència                                                                                  | Bloquejos | Pròxima acció                                     |
-| ------------------------ | ---------- | ------------------------------------------------------------------------------------------ | --------- | ------------------------------------------------- |
-| 0. Inicialització        | Completada | Instal·lació, format, lint, typecheck, tests, build, Compose i endpoints mínims verificats |           |                                                   |
-| 1. Domini                | Completada | Contractes Zod, regles documentades, exemples JSON i proves automatitzades                 |           |                                                   |
-| 2. Motor FIFO            | Completada | Temps virtual, cua d'esdeveniments, FIFO i 13 proves del motor                             |           |                                                   |
-| 3. Polítiques            | Completada | Prioritat estricta, envelliment, factoria i 35 proves del motor                            |           |                                                   |
-| 4. Generador i mètriques | Completada | Generació amb llavor, mètriques agregades, 58 proves del motor i 11 de contractes          |           |                                                   |
-| 5. API i persistència    | Pendent    |                                                                                            |           | Integrar el motor amb NestJS, Prisma i PostgreSQL |
-| 6. Interfície funcional  | Pendent    |                                                                                            |           |                                                   |
-| 7. Visualització         | Pendent    |                                                                                            |           |                                                   |
-| 8. Qualitat              | Pendent    |                                                                                            |           |                                                   |
-| 9. Entrega               | Pendent    |                                                                                            |           |                                                   |
-| 10. Vídeo                | Pendent    |                                                                                            |           |                                                   |
+| Fase                     | Estat      | Evidència                                                                                  | Bloquejos | Pròxima acció                                      |
+| ------------------------ | ---------- | ------------------------------------------------------------------------------------------ | --------- | -------------------------------------------------- |
+| 0. Inicialització        | Completada | Instal·lació, format, lint, typecheck, tests, build, Compose i endpoints mínims verificats |           |                                                    |
+| 1. Domini                | Completada | Contractes Zod, regles documentades, exemples JSON i proves automatitzades                 |           |                                                    |
+| 2. Motor FIFO            | Completada | Temps virtual, cua d'esdeveniments, FIFO i 13 proves del motor                             |           |                                                    |
+| 3. Polítiques            | Completada | Prioritat estricta, envelliment, factoria i 35 proves del motor                            |           |                                                    |
+| 4. Generador i mètriques | Completada | Generació amb llavor, mètriques agregades, 58 proves del motor i 11 de contractes          |           |                                                    |
+| 5. API i persistència    | En curs    | Migració inicial i API per crear, llistar i consultar escenaris manuals                    |           | Validar el primer recorregut i afegir comparacions |
+| 6. Interfície funcional  | Pendent    |                                                                                            |           |                                                    |
+| 7. Visualització         | Pendent    |                                                                                            |           |                                                    |
+| 8. Qualitat              | Pendent    |                                                                                            |           |                                                    |
+| 9. Entrega               | Pendent    |                                                                                            |           |                                                    |
+| 10. Vídeo                | Pendent    |                                                                                            |           |                                                    |

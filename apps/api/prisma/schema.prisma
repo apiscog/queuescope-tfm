@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Scenario {
+  id          String         @id @db.VarChar(100)
+  name        String         @db.VarChar(120)
+  timeUnit    String         @db.VarChar(20)
+  workerCount Int
+  source      Json
+  createdAt   DateTime       @db.Timestamptz(3)
+  tasks       ScenarioTask[]
+
+  @@map("scenarios")
+}
+
+model ScenarioTask {
+  scenarioId      String   @db.VarChar(100)
+  id              String   @db.VarChar(100)
+  sequence        Int
+  type            String   @db.VarChar(50)
+  arrivalTime     BigInt
+  serviceDuration BigInt
+  initialPriority Int
+  scenario        Scenario @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+
+  @@id([scenarioId, id])
+  @@unique([scenarioId, sequence])
+  @@map("scenario_tasks")
+}

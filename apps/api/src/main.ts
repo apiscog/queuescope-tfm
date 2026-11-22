@@ -1,3 +1,8 @@
+import { config } from 'dotenv';
+import { resolve } from 'node:path';
+
+config({ path: resolve(process.cwd(), '.env') });
+
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';

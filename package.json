@@ -13,13 +13,13 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
+    "build": "npm run build --workspace @queuescope/contracts && npm run build --workspace @queuescope/simulation-engine && npm run build --workspace @queuescope/api && npm run build --workspace @queuescope/web",
     "dev": "npm run dev --workspaces --if-present",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint . --max-warnings=0",
-    "test": "npm run test --workspaces --if-present",
-    "typecheck": "npm run build --workspace @queuescope/contracts && npm run typecheck --workspaces --if-present"
+    "test": "npm run build --workspace @queuescope/contracts && npm run build --workspace @queuescope/simulation-engine && npm run test --workspaces --if-present",
+    "typecheck": "npm run build --workspace @queuescope/contracts && npm run build --workspace @queuescope/simulation-engine && npm run db:generate --workspace @queuescope/api && npm run typecheck --workspaces --if-present"
   },
   "devDependencies": {
     "@eslint/js": "latest",
