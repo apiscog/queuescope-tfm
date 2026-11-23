@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Inject,
+  Param,
+  Post,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -7,6 +15,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import type { Scenario } from '@queuescope/contracts';
@@ -43,7 +52,39 @@ const scenarioExample = {
 @ApiTags('escenaris')
 @Controller('scenarios')
 export class ScenariosController {
-  constructor(private readonly scenarios: ScenariosService) {}
+  constructor(
+    @Inject(ScenariosService) private readonly scenarios: ScenariosService,
+  ) {}
+
+  @Post('preview')
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Previsualitza una càrrega generada sense desar-la',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      example: {
+        id: 'scenario-preview-001',
+        name: 'Escenari sintètic de prova',
+        createdAt: '2026-11-23T10:00:00.000Z',
+        parameters: {
+          taskCount: 5,
+          workerCount: 2,
+          arrivalTimeRange: { minimum: 0, maximum: 6 },
+          serviceDurationRange: { minimum: 1, maximum: 4 },
+          priorityRange: { minimum: 0, maximum: 5 },
+          taskTypes: ['correu', 'informe'],
+          seed: 12345,
+        },
+      },
+    },
+  })
+  @ApiOkResponse({ description: 'Escenari generat, encara no desat' })
+  @ApiBadRequestResponse({ description: 'Paràmetres de generació invàlids' })
+  preview(@Body() input: unknown): Scenario {
+    return this.scenarios.preview(input);
+  }
 
   @Post()
   @ApiOperation({ summary: 'Crea un escenari manual i desa les tasques' })
@@ -73,6 +114,11 @@ export class ScenariosController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Consulta un escenari i les seves tasques' })
+  @ApiParam({
+    name: 'id',
+    description: 'Identificador de l’escenari',
+    example: 'escenari-demo-1',
+  })
   @ApiOkResponse({
     description: 'Escenari desat',
     schema: { example: scenarioExample },

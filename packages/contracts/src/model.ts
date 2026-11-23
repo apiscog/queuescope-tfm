@@ -2,6 +2,7 @@ import type { z } from 'zod';
 
 import type {
   ComparisonResultSchema,
+  CreateComparisonInputSchema,
   GenerateScenarioInputSchema,
   IntegerRangeSchema,
   PolicyConfigurationSchema,
@@ -39,6 +40,7 @@ export type GenerateScenarioInput = z.infer<typeof GenerateScenarioInputSchema>;
 export type ScenarioSource = z.infer<typeof ScenarioSourceSchema>;
 export type Scenario = z.infer<typeof ScenarioSchema>;
 export type RunInput = z.infer<typeof RunInputSchema>;
+export type CreateComparisonInput = z.infer<typeof CreateComparisonInputSchema>;
 export type TaskResult = z.infer<typeof TaskResultSchema>;
 export type StatisticalSummary = z.infer<typeof StatisticalSummarySchema>;
 export type PriorityMetrics = z.infer<typeof PriorityMetricsSchema>;

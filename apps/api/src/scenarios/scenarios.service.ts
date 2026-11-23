@@ -1,11 +1,17 @@
 import {
   BadRequestException,
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { ScenarioSchema, type Scenario } from '@queuescope/contracts';
+import {
+  GenerateScenarioInputSchema,
+  ScenarioSchema,
+  type Scenario,
+} from '@queuescope/contracts';
+import { generateScenario } from '@queuescope/simulation-engine';
 import { ZodError } from 'zod';
 
 import { PrismaService } from '../database/prisma.service';
@@ -37,7 +43,21 @@ function toScenario(record: ScenarioWithTasks): Scenario {
 
 @Injectable()
 export class ScenariosService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
+
+  preview(input: unknown): Scenario {
+    const parsed = GenerateScenarioInputSchema.safeParse(input);
+    if (!parsed.success) {
+      throw new BadRequestException({
+        message: 'Els paràmetres de generació no són vàlids',
+        issues: parsed.error.issues.map((issue) => ({
+          path: issue.path.join('.'),
+          message: issue.message,
+        })),
+      });
+    }
+    return generateScenario(parsed.data);
+  }
 
   async create(input: unknown): Promise<Scenario> {
     let scenario: Scenario;

@@ -1,0 +1,34 @@
+{
+  "id": "scenario-comparison-001",
+  "name": "Escenari per comparar polítiques",
+  "timeUnit": "tick",
+  "workers": { "count": 1 },
+  "tasks": [
+    {
+      "id": "task-a",
+      "sequence": 0,
+      "type": "bloquejadora",
+      "arrivalTime": 0,
+      "serviceDuration": 4,
+      "initialPriority": 9
+    },
+    {
+      "id": "task-b",
+      "sequence": 1,
+      "type": "estandard",
+      "arrivalTime": 1,
+      "serviceDuration": 3,
+      "initialPriority": 1
+    },
+    {
+      "id": "task-c",
+      "sequence": 2,
+      "type": "urgent",
+      "arrivalTime": 1,
+      "serviceDuration": 1,
+      "initialPriority": 5
+    }
+  ],
+  "source": { "kind": "manual" },
+  "createdAt": "2026-11-23T10:00:00.000Z"
+}
