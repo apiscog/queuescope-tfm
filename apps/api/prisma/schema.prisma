@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Scenario {
+  id          String         @id @db.VarChar(100)
+  name        String         @db.VarChar(120)
+  timeUnit    String         @db.VarChar(20)
+  workerCount Int
+  source      Json
+  createdAt   DateTime       @db.Timestamptz(3)
+  tasks       ScenarioTask[]
+  comparisons Comparison[]
+
+  @@map("scenarios")
+}
+
+model ScenarioTask {
+  scenarioId      String   @db.VarChar(100)
+  id              String   @db.VarChar(100)
+  sequence        Int
+  type            String   @db.VarChar(50)
+  arrivalTime     BigInt
+  serviceDuration BigInt
+  initialPriority Int
+  scenario        Scenario @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+
+  @@id([scenarioId, id])
+  @@unique([scenarioId, sequence])
+  @@map("scenario_tasks")
+}
+
+model Comparison {
+  id               String   @id @db.VarChar(100)
+  scenarioId       String   @db.VarChar(100)
+  scenarioSnapshot Json
+  createdAt        DateTime @db.Timestamptz(3)
+  scenario         Scenario @relation(fields: [scenarioId], references: [id], onDelete: Restrict)
+  runs             Run[]
+
+  @@index([scenarioId, createdAt])
+  @@map("comparisons")
+}
+
+model Run {
+  id            String          @id @db.VarChar(100)
+  comparisonId  String          @db.VarChar(100)
+  sequence      Int
+  policy        Json
+  engineVersion String          @db.VarChar(50)
+  status        String          @db.VarChar(20)
+  startedAt     DateTime        @db.Timestamptz(3)
+  completedAt   DateTime        @db.Timestamptz(3)
+  metrics       Json
+  comparison    Comparison      @relation(fields: [comparisonId], references: [id], onDelete: Cascade)
+  taskResults   RunTaskResult[]
+
+  @@unique([comparisonId, sequence])
+  @@map("runs")
+}
+
+model RunTaskResult {
+  runId            String @db.VarChar(100)
+  taskId           String @db.VarChar(100)
+  sequence         Int
+  workerId         String @db.VarChar(100)
+  initialPriority  Int
+  arrivalTime      BigInt
+  serviceStartTime BigInt
+  completionTime   BigInt
+  waitingTime      BigInt
+  turnaroundTime   BigInt
+  run              Run    @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@id([runId, taskId])
+  @@unique([runId, sequence])
+  @@map("run_task_results")
+}

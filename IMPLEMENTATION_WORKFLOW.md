@@ -253,7 +253,9 @@ Criterios de salida:
   comparación y recupera los resultados.
 - La API impide comparar cargas distintas por accidente.
 - Reiniciar la API no elimina los resultados persistidos.
-- Las migraciones se pueden aplicar tanto al PostgreSQL local como a Neon.
+- Las migraciones se aplican desde cero en PostgreSQL local y la configuración
+  distingue la conexión de ejecución de la conexión directa para migraciones.
+  La aplicación real en Neon se verifica en la fase 8, junto al despliegue.
 
 ### Fase 6. Primera interfaz web funcional
 

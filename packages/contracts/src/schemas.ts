@@ -144,6 +144,22 @@ export const RunInputSchema = z.strictObject({
   engineVersion: z.string().trim().min(1).max(50),
 });
 
+export const CreateComparisonInputSchema = z
+  .strictObject({
+    scenarioId: IdentifierSchema,
+    policies: z.array(PolicyConfigurationSchema).min(2).max(3),
+  })
+  .superRefine((input, context) => {
+    const policyIds = input.policies.map((policy) => policy.id);
+    if (new Set(policyIds).size !== policyIds.length) {
+      context.addIssue({
+        code: 'custom',
+        message: 'Each policy may appear only once in a comparison',
+        path: ['policies'],
+      });
+    }
+  });
+
 export const TaskResultSchema = z
   .strictObject({
     taskId: IdentifierSchema,
