@@ -153,7 +153,9 @@ describe('interfície d’escenaris', () => {
 
     expect(await screen.findByText('Escenari de prova')).toBeTruthy();
     expect(screen.getByText('1 tasca · 2 workers')).toBeTruthy();
-    fireEvent.click(screen.getByRole('link', { name: 'Veure escenari' }));
+    fireEvent.click(
+      screen.getByRole('link', { name: 'Veure escenari: Escenari de prova' }),
+    );
 
     expect(await screen.findByText('task-a')).toBeTruthy();
     expect(
