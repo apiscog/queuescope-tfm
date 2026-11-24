@@ -22,6 +22,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
+import { lazy, Suspense } from 'react';
 import {
   BrowserRouter,
   Link as RouterLink,
@@ -31,9 +32,14 @@ import {
 } from 'react-router';
 
 import { getScenario, listScenarios } from './api';
-import { ComparisonPage } from './ComparisonPage';
 import { PolicyPicker } from './PolicyPicker';
 import { ScenarioForm } from './ScenarioForm';
+
+const ComparisonPage = lazy(() =>
+  import('./ComparisonPage').then((module) => ({
+    default: module.ComparisonPage,
+  })),
+);
 
 function QueryFeedback({ error, retry }: { error: Error; retry: () => void }) {
   return (
@@ -247,7 +253,14 @@ export function App() {
           <Route path="/" element={<ScenarioList />} />
           <Route path="/scenarios/new" element={<ScenarioForm />} />
           <Route path="/scenarios/:id" element={<ScenarioDetail />} />
-          <Route path="/comparisons/:id" element={<ComparisonPage />} />
+          <Route
+            path="/comparisons/:id"
+            element={
+              <Suspense fallback={<LoadingState />}>
+                <ComparisonPage />
+              </Suspense>
+            }
+          />
           <Route
             path="*"
             element={

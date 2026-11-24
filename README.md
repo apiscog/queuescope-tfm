@@ -74,7 +74,7 @@ scripts/                  Automatitzacions reproduïbles
 | 4. Generador i mètriques | Completada | Generació amb llavor, mètriques agregades, 58 proves del motor i 11 de contractes          |           |               |
 | 5. API i persistència    | Completada | Escenaris, comparacions, previsualització, migracions i persistència verificats            |           |               |
 | 6. Interfície funcional  | Completada | Flux web de creació, previsualització, comparació i recuperació verificat                  |           |               |
-| 7. Visualització         | Pendent    |                                                                                            |           |               |
+| 7. Visualització         | Completada | Dos gràfics interpretables verificats amb les taules de valors exactes                     |           |               |
 | 8. Qualitat              | Pendent    |                                                                                            |           |               |
 | 9. Entrega               | Pendent    |                                                                                            |           |               |
 | 10. Vídeo                | Pendent    |                                                                                            |           |               |

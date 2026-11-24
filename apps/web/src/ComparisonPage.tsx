@@ -13,11 +13,13 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import type { PolicyConfiguration } from '@queuescope/contracts';
 import { useQuery } from '@tanstack/react-query';
 import { Link as RouterLink, useParams } from 'react-router';
 
 import { getComparison } from './api';
+import { policyName } from './comparison-presentation';
+import { PriorityWaitingChart } from './PriorityWaitingChart';
+import { WaitingTimeChart } from './WaitingTimeChart';
 
 const numberFormat = new Intl.NumberFormat('ca-ES', {
   maximumFractionDigits: 2,
@@ -25,12 +27,6 @@ const numberFormat = new Intl.NumberFormat('ca-ES', {
 
 function formatValue(value: number | null): string {
   return value === null ? 'No definit' : numberFormat.format(value);
-}
-
-function policyName(policy: PolicyConfiguration): string {
-  if (policy.id === 'fifo') return 'FIFO';
-  if (policy.id === 'strict-priority') return 'Prioritat estricta';
-  return `Prioritat amb envelliment (${policy.agingInterval} ticks)`;
 }
 
 export function ComparisonPage() {
@@ -144,6 +140,7 @@ export function ComparisonPage() {
               </TableBody>
             </Table>
           </TableContainer>
+          <WaitingTimeChart runs={comparison.data.runs} />
           <Typography component="h2" variant="h5">
             Resultats per prioritat inicial
           </Typography>
@@ -183,6 +180,7 @@ export function ComparisonPage() {
               </TableBody>
             </Table>
           </TableContainer>
+          <PriorityWaitingChart runs={comparison.data.runs} />
           <Link
             component={RouterLink}
             to={`/scenarios/${encodeURIComponent(comparison.data.scenarioSnapshot.id)}`}
