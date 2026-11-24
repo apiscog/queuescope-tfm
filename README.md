@@ -2,7 +2,7 @@
 
 QueueScope és una plataforma web per definir càrregues sintètiques de tasques asíncrones i comparar polítiques de planificació en condicions controlades i reproduïbles.
 
-El projecte és un monorepositori amb una API REST basada en NestJS, una aplicació web React i dos paquets TypeScript independents per al motor de simulació i els contractes compartits. El nucli pot generar càrregues reproduïbles, executar FIFO, prioritat estricta o prioritat amb envelliment i calcular mètriques agregades. La fase 5 està en curs i ja permet guardar escenaris i comparacions a PostgreSQL i consultar-ne els resultats mitjançant Swagger.
+El projecte és un monorepositori amb una API REST basada en NestJS, una aplicació web React i dos paquets TypeScript independents per al motor de simulació i els contractes compartits. El nucli pot generar càrregues reproduïbles, executar FIFO, prioritat estricta o prioritat amb envelliment i calcular mètriques agregades. Les fases 5 i 6 completen el primer recorregut local des de la creació d'un escenari fins a la comparació persistida de les tres polítiques a la interfície web.
 
 ## Requisits
 
@@ -15,14 +15,15 @@ La versió de Node està fixada a `.nvmrc` i `.node-version`. Amb `fnm`, es pot 
 ## Preparació de l'entorn
 
 1. Instal·la les dependències des de l'arrel amb `npm install`.
-2. Copia `.env.example` a `apps/api/.env` i adapta els valors si cal. No versionis aquest fitxer.
-3. Genera el client de Prisma amb `npm run db:generate --workspace @queuescope/api`. Repeteix aquest pas quan canviï `schema.prisma`, amb l'API aturada.
-4. Inicia PostgreSQL amb `docker compose up -d postgres`.
-5. Aplica les migracions amb `npm run db:migrate --workspace @queuescope/api`.
-6. Executa l'API amb `npm run dev --workspace @queuescope/api`.
-7. Executa el frontend en una altra terminal amb `npm run dev --workspace @queuescope/web`.
+2. Copia `.env.example` a `apps/api/.env` i `apps/web/.env.example` a `apps/web/.env`. Adapta els valors si cal. No versionis aquests fitxers.
+3. Compila els paquets compartits amb `npm run build --workspace @queuescope/contracts` i `npm run build --workspace @queuescope/simulation-engine`.
+4. Genera el client de Prisma amb `npm run db:generate --workspace @queuescope/api`. Repeteix aquest pas quan canviï `schema.prisma`, amb l'API aturada.
+5. Inicia PostgreSQL amb `docker compose up -d postgres`.
+6. Aplica les migracions amb `npm run db:migrate --workspace @queuescope/api`.
+7. Executa l'API amb `npm run dev --workspace @queuescope/api`.
+8. Executa el frontend en una altra terminal amb `npm run dev --workspace @queuescope/web`.
 
-La primera prova manual de la fase 5 està explicada a `docs/architecture/api-and-persistence.md`. Per veure les taules i les files també es pot executar `npm run db:studio --workspace @queuescope/api`.
+Les proves manuals de l'API estan explicades a `docs/architecture/api-and-persistence.md`. El primer recorregut web està descrit a `docs/architecture/web-interface.md`. Per veure les taules i les files també es pot executar `npm run db:studio --workspace @queuescope/api`.
 
 | Servei         | Adreça                       |
 | -------------- | ---------------------------- |
@@ -72,7 +73,7 @@ scripts/                  Automatitzacions reproduïbles
 | 3. Polítiques            | Completada | Prioritat estricta, envelliment, factoria i 35 proves del motor                            |           |               |
 | 4. Generador i mètriques | Completada | Generació amb llavor, mètriques agregades, 58 proves del motor i 11 de contractes          |           |               |
 | 5. API i persistència    | Completada | Escenaris, comparacions, previsualització, migracions i persistència verificats            |           |               |
-| 6. Interfície funcional  | Pendent    |                                                                                            |           |               |
+| 6. Interfície funcional  | Completada | Flux web de creació, previsualització, comparació i recuperació verificat                  |           |               |
 | 7. Visualització         | Pendent    |                                                                                            |           |               |
 | 8. Qualitat              | Pendent    |                                                                                            |           |               |
 | 9. Entrega               | Pendent    |                                                                                            |           |               |
