@@ -25,6 +25,7 @@ import { useForm } from 'react-hook-form';
 import { Link as RouterLink, useNavigate } from 'react-router';
 
 import { createScenario, previewScenario } from './api';
+import { colors } from './theme';
 
 interface FormValues {
   name: string;
@@ -156,12 +157,46 @@ export function ScenarioForm() {
     required: 'Escriu almenys un tipus',
   });
 
+  function renderNumericFields(fields: typeof numericFields) {
+    return fields.map((field) => {
+      const registered = register(field.name, {
+        required: 'Aquest valor és obligatori',
+        valueAsNumber: true,
+        min: { value: field.min, message: `El mínim és ${field.min}` },
+        max: { value: field.max, message: `El màxim és ${field.max}` },
+        validate: (value) =>
+          Number.isInteger(value) || 'Escriu un nombre enter',
+      });
+      return (
+        <TextField
+          key={field.name}
+          label={field.label}
+          type="number"
+          {...registered}
+          inputRef={registered.ref}
+          error={Boolean(errors[field.name])}
+          helperText={errors[field.name]?.message}
+          slotProps={{
+            htmlInput: { min: field.min, max: field.max, step: 1 },
+          }}
+          fullWidth
+        />
+      );
+    });
+  }
+
   return (
-    <Stack spacing={3}>
+    <Stack spacing={4}>
       <Link component={RouterLink} to="/" underline="hover">
         ← Tornar als escenaris
       </Link>
       <Box>
+        <Typography
+          variant="overline"
+          sx={{ color: colors.green, fontWeight: 800, letterSpacing: '0.15em' }}
+        >
+          01 / PREPARA LA CÀRREGA
+        </Typography>
         <Typography component="h1" variant="h4" gutterBottom>
           Crea un escenari sintètic
         </Typography>
@@ -171,83 +206,173 @@ export function ScenarioForm() {
         </Typography>
       </Box>
       <Box
-        component="form"
-        onSubmit={(event) => void handleSubmit(onSubmit)(event)}
-        onChange={() => {
-          setPreview(null);
-          setValidationError(null);
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: {
+            xs: '1fr',
+            md: 'minmax(0, 1.55fr) minmax(270px, 0.75fr)',
+          },
+          gap: 3,
+          alignItems: 'start',
         }}
-        noValidate
       >
-        <Stack spacing={2} sx={{ maxWidth: 650 }}>
-          <TextField
-            label="Nom de l'escenari"
-            {...nameField}
-            inputRef={nameField.ref}
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
-            fullWidth
-          />
-          <TextField
-            label="Tipus de tasca, separats per comes"
-            {...typesField}
-            inputRef={typesField.ref}
-            error={Boolean(errors.taskTypes)}
-            helperText={errors.taskTypes?.message}
-            fullWidth
-          />
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
-              gap: 2,
-            }}
-          >
-            {numericFields.map((field) => {
-              const registered = register(field.name, {
-                required: 'Aquest valor és obligatori',
-                valueAsNumber: true,
-                min: { value: field.min, message: `El mínim és ${field.min}` },
-                max: { value: field.max, message: `El màxim és ${field.max}` },
-                validate: (value) =>
-                  Number.isInteger(value) || 'Escriu un nombre enter',
-              });
-              return (
-                <TextField
-                  key={field.name}
-                  label={field.label}
-                  type="number"
-                  {...registered}
-                  inputRef={registered.ref}
-                  error={Boolean(errors[field.name])}
-                  helperText={errors[field.name]?.message}
-                  slotProps={{
-                    htmlInput: { min: field.min, max: field.max, step: 1 },
-                  }}
-                />
-              );
-            })}
-          </Box>
-          {validationError && <Alert severity="error">{validationError}</Alert>}
-          {previewRequest.isError && (
-            <Alert severity="error">{previewRequest.error.message}</Alert>
-          )}
-          <Button
-            type="submit"
-            variant="contained"
-            disabled={previewRequest.isPending}
-          >
-            {previewRequest.isPending
-              ? 'Generant tasques…'
-              : 'Previsualitza les tasques'}
-          </Button>
-        </Stack>
+        <Paper
+          component="form"
+          variant="outlined"
+          onSubmit={(event) => void handleSubmit(onSubmit)(event)}
+          onChange={() => {
+            setPreview(null);
+            setValidationError(null);
+          }}
+          noValidate
+          sx={{ p: { xs: 2.5, sm: 4 } }}
+        >
+          <Stack spacing={3}>
+            <Box>
+              <Typography component="h2" variant="h6">
+                Dades principals
+              </Typography>
+              <Typography color="text.secondary">
+                Identifica la càrrega que compararàs.
+              </Typography>
+            </Box>
+            <TextField
+              label="Nom de l'escenari"
+              {...nameField}
+              inputRef={nameField.ref}
+              error={Boolean(errors.name)}
+              helperText={errors.name?.message}
+              fullWidth
+            />
+            <TextField
+              label="Tipus de tasca, separats per comes"
+              {...typesField}
+              inputRef={typesField.ref}
+              error={Boolean(errors.taskTypes)}
+              helperText={errors.taskTypes?.message}
+              fullWidth
+            />
+            <Box>
+              <Typography component="h3" variant="h6" sx={{ mb: 0.5 }}>
+                Mida i reproducció
+              </Typography>
+              <Typography color="text.secondary" sx={{ mb: 2 }}>
+                La mateixa llavor crea sempre la mateixa càrrega.
+              </Typography>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: {
+                    xs: '1fr',
+                    sm: 'repeat(2, minmax(0, 1fr))',
+                  },
+                  gap: 2,
+                }}
+              >
+                {renderNumericFields(numericFields.slice(0, 3))}
+              </Box>
+            </Box>
+            <Box>
+              <Typography component="h3" variant="h6" sx={{ mb: 0.5 }}>
+                Rangs de les tasques
+              </Typography>
+              <Typography color="text.secondary" sx={{ mb: 2 }}>
+                Els temps es mesuren en ticks de temps virtual.
+              </Typography>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: {
+                    xs: '1fr',
+                    sm: 'repeat(2, minmax(0, 1fr))',
+                  },
+                  gap: 2,
+                }}
+              >
+                {renderNumericFields(numericFields.slice(3))}
+              </Box>
+            </Box>
+            {validationError && (
+              <Alert severity="error">{validationError}</Alert>
+            )}
+            {previewRequest.isError && (
+              <Alert severity="error">{previewRequest.error.message}</Alert>
+            )}
+            <Button
+              type="submit"
+              variant="contained"
+              aria-label="Previsualitza les tasques"
+              disabled={previewRequest.isPending}
+              sx={{ alignSelf: 'flex-start' }}
+            >
+              {previewRequest.isPending
+                ? 'Generant tasques…'
+                : 'Previsualitza les tasques →'}
+            </Button>
+          </Stack>
+        </Paper>
+        <Paper
+          variant="outlined"
+          sx={{
+            p: { xs: 2.5, sm: 3 },
+            bgcolor: '#E9F0E8',
+            position: { md: 'sticky' },
+            top: { md: 102 },
+          }}
+        >
+          <Stack spacing={2}>
+            <Typography
+              variant="overline"
+              sx={{
+                color: colors.green,
+                letterSpacing: '0.13em',
+                fontWeight: 800,
+              }}
+            >
+              COM FUNCIONA
+            </Typography>
+            <Typography variant="h6">
+              Primer, una càrrega que pots repetir.
+            </Typography>
+            <Typography color="text.secondary">
+              Indica quantes tasques arriben, quant duren i quants workers les
+              poden atendre.
+            </Typography>
+            <Typography color="text.secondary">
+              La previsualització no desa res. Podràs revisar la taula abans de
+              guardar l'escenari.
+            </Typography>
+            <Box
+              sx={{
+                borderTop: `1px solid ${colors.line}`,
+                pt: 2,
+                fontFamily: 'ui-monospace, monospace',
+                fontSize: 12,
+                color: colors.green,
+              }}
+            >
+              DEFINIR → REVISAR → DESAR
+            </Box>
+          </Stack>
+        </Paper>
       </Box>
       {preview && (
-        <Stack spacing={2}>
-          <Typography component="h2" variant="h5">
-            Previsualització
-          </Typography>
+        <Stack spacing={2} id="previsualitzacio">
+          <Box>
+            <Typography
+              variant="overline"
+              sx={{
+                color: colors.green,
+                fontWeight: 800,
+                letterSpacing: '0.15em',
+              }}
+            >
+              02 / REVISA ABANS DE DESAR
+            </Typography>
+            <Typography component="h2" variant="h5">
+              Previsualització
+            </Typography>
+          </Box>
           <Typography>
             {preview.tasks.length}{' '}
             {preview.tasks.length === 1
@@ -260,7 +385,11 @@ export function ScenarioForm() {
               : ''}
             .
           </Typography>
-          <TableContainer component={Paper} variant="outlined">
+          <TableContainer
+            component={Paper}
+            variant="outlined"
+            sx={{ overflowX: 'auto' }}
+          >
             <Table size="small" aria-label="Previsualització de tasques">
               <TableHead>
                 <TableRow>
@@ -291,6 +420,7 @@ export function ScenarioForm() {
             variant="contained"
             onClick={() => saveRequest.mutate(preview)}
             disabled={saveRequest.isPending}
+            sx={{ alignSelf: 'flex-start' }}
           >
             {saveRequest.isPending ? 'Desant…' : 'Desa aquest escenari'}
           </Button>

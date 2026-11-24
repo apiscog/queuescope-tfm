@@ -1,6 +1,8 @@
 import {
   Alert,
+  Box,
   Button,
+  Chip,
   CircularProgress,
   Link,
   Paper,
@@ -13,12 +15,15 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import type { RunResult } from '@queuescope/contracts';
 import { useQuery } from '@tanstack/react-query';
 import { Link as RouterLink, useParams } from 'react-router';
 
 import { getComparison } from './api';
-import { policyName } from './comparison-presentation';
+import { policyColors, policyName } from './comparison-presentation';
 import { PriorityWaitingChart } from './PriorityWaitingChart';
+import { TaskTimeline } from './TaskTimeline';
+import { colors } from './theme';
 import { WaitingTimeChart } from './WaitingTimeChart';
 
 const numberFormat = new Intl.NumberFormat('ca-ES', {
@@ -29,6 +34,54 @@ function formatValue(value: number | null): string {
   return value === null ? 'No definit' : numberFormat.format(value);
 }
 
+function p95Insight(runs: RunResult[]): string | null {
+  const values = runs
+    .flatMap((run) => {
+      const value = run.metrics.waitingTime.p95;
+      return value === null ? [] : [{ name: policyName(run.policy), value }];
+    })
+    .sort((left, right) => left.value - right.value);
+
+  if (values.length < 2) return null;
+  const first = values[0];
+  const last = values[values.length - 1];
+  if (!first || !last) return null;
+  if (first.value === last.value) {
+    return `En aquest escenari, totes les polítiques tenen el mateix P95 d'espera: ${formatValue(first.value)} ticks.`;
+  }
+  const lowestNames = values
+    .filter((item) => item.value === first.value)
+    .map((item) => item.name)
+    .join(' i ');
+  const highestNames = values
+    .filter((item) => item.value === last.value)
+    .map((item) => item.name)
+    .join(' i ');
+  return `En aquest escenari, el P95 d'espera va de ${formatValue(first.value)} ticks (${lowestNames}) a ${formatValue(last.value)} ticks (${highestNames}).`;
+}
+
+function PolicyLabel({ run }: { run: RunResult }) {
+  return (
+    <Stack
+      direction="row"
+      spacing={1}
+      sx={{ alignItems: 'center', minWidth: 155 }}
+    >
+      <Box
+        sx={{
+          width: 10,
+          height: 10,
+          borderRadius: '50%',
+          bgcolor: policyColors[run.policy.id],
+          flexShrink: 0,
+        }}
+        aria-hidden="true"
+      />
+      <span>{policyName(run.policy)}</span>
+    </Stack>
+  );
+}
+
 export function ComparisonPage() {
   const { id } = useParams<{ id: string }>();
   const comparison = useQuery({
@@ -36,9 +89,10 @@ export function ComparisonPage() {
     queryFn: () => getComparison(id ?? ''),
     enabled: Boolean(id),
   });
+  const insight = comparison.data ? p95Insight(comparison.data.runs) : null;
 
   return (
-    <Stack spacing={3}>
+    <Stack spacing={4}>
       <Link component={RouterLink} to="/" underline="hover">
         ← Tornar als escenaris
       </Link>
@@ -69,29 +123,92 @@ export function ComparisonPage() {
       )}
       {comparison.data && (
         <>
-          <Typography component="h1" variant="h4">
-            Comparació de {comparison.data.scenarioSnapshot.name}
-          </Typography>
-          <Typography>
-            {comparison.data.scenarioSnapshot.tasks.length}{' '}
-            {comparison.data.scenarioSnapshot.tasks.length === 1
-              ? 'tasca'
-              : 'tasques'}{' '}
-            · {comparison.data.scenarioSnapshot.workers.count}{' '}
-            {comparison.data.scenarioSnapshot.workers.count === 1
-              ? 'worker'
-              : 'workers'}{' '}
-            · {comparison.data.runs.length} polítiques
-          </Typography>
+          <Paper
+            variant="outlined"
+            sx={{ p: { xs: 2.5, sm: 4 }, bgcolor: '#E9F0E8' }}
+          >
+            <Stack spacing={2.5}>
+              <Typography
+                variant="overline"
+                sx={{
+                  color: colors.green,
+                  fontWeight: 800,
+                  letterSpacing: '0.15em',
+                }}
+              >
+                04 / RESULTATS
+              </Typography>
+              <Typography component="h1" variant="h4">
+                Comparació de {comparison.data.scenarioSnapshot.name}
+              </Typography>
+              <Stack
+                direction="row"
+                spacing={1}
+                sx={{ flexWrap: 'wrap' }}
+                useFlexGap
+              >
+                <Chip
+                  label={`${comparison.data.scenarioSnapshot.tasks.length} ${comparison.data.scenarioSnapshot.tasks.length === 1 ? 'tasca' : 'tasques'}`}
+                  sx={{ bgcolor: '#FFFFFF', fontWeight: 700 }}
+                />
+                <Chip
+                  label={`${comparison.data.scenarioSnapshot.workers.count} ${comparison.data.scenarioSnapshot.workers.count === 1 ? 'worker' : 'workers'}`}
+                  sx={{ bgcolor: '#FFFFFF', fontWeight: 700 }}
+                />
+                <Chip
+                  label={`${comparison.data.runs.length} polítiques`}
+                  sx={{ bgcolor: '#FFFFFF', fontWeight: 700 }}
+                />
+              </Stack>
+              <Button
+                component={RouterLink}
+                to={`/scenarios/${encodeURIComponent(comparison.data.scenarioSnapshot.id)}`}
+                variant="outlined"
+                sx={{ alignSelf: 'flex-start', bgcolor: '#FFFFFF' }}
+              >
+                Veure l'escenari utilitzat
+              </Button>
+              <Link
+                href="#task-timeline-title"
+                sx={{ alignSelf: 'flex-start', fontWeight: 700 }}
+              >
+                Veure el recorregut de les tasques ↓
+              </Link>
+            </Stack>
+          </Paper>
           <Alert severity="info">
             Els valors provenen d'una simulació en ticks de temps virtual i no
             mesuren el rendiment real del servidor.
           </Alert>
-          <Typography component="h2" variant="h5">
-            Resum de resultats
-          </Typography>
-          <TableContainer component={Paper} variant="outlined">
-            <Table size="small" aria-label="Comparació de mètriques">
+          <Box>
+            <Typography
+              variant="overline"
+              sx={{
+                color: colors.green,
+                fontWeight: 800,
+                letterSpacing: '0.15em',
+              }}
+            >
+              LECTURA PRINCIPAL
+            </Typography>
+            <Typography component="h2" variant="h5">
+              Resum de resultats
+            </Typography>
+            <Typography color="text.secondary">
+              La mateixa càrrega, mesurada amb cada política. Desplaça la taula
+              horitzontalment si cal.
+            </Typography>
+          </Box>
+          <TableContainer
+            component={Paper}
+            variant="outlined"
+            sx={{ overflowX: 'auto' }}
+          >
+            <Table
+              size="small"
+              aria-label="Comparació de mètriques"
+              sx={{ minWidth: 850 }}
+            >
               <TableHead>
                 <TableRow>
                   <TableCell>Política</TableCell>
@@ -108,7 +225,7 @@ export function ComparisonPage() {
                 {comparison.data.runs.map((run) => (
                   <TableRow key={run.runId}>
                     <TableCell component="th" scope="row">
-                      {policyName(run.policy)}
+                      <PolicyLabel run={run} />
                     </TableCell>
                     <TableCell align="right">
                       {run.metrics.completedTaskCount}
@@ -140,12 +257,66 @@ export function ComparisonPage() {
               </TableBody>
             </Table>
           </TableContainer>
+          {insight && (
+            <Paper
+              variant="outlined"
+              sx={{
+                p: { xs: 2.5, sm: 3 },
+                borderLeft: `4px solid ${colors.green}`,
+              }}
+            >
+              <Typography
+                variant="overline"
+                sx={{
+                  color: colors.green,
+                  fontWeight: 800,
+                  letterSpacing: '0.12em',
+                }}
+              >
+                QUÈ MOSTRA AQUEST CAS?
+              </Typography>
+              <Typography sx={{ fontWeight: 650 }}>{insight}</Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
+                El P95 és el valor que deixa almenys el 95 % de les esperes
+                iguals o per sota. Llegeix-lo juntament amb la resta de
+                mètriques.
+              </Typography>
+            </Paper>
+          )}
           <WaitingTimeChart runs={comparison.data.runs} />
-          <Typography component="h2" variant="h5">
-            Resultats per prioritat inicial
-          </Typography>
-          <TableContainer component={Paper} variant="outlined">
-            <Table size="small" aria-label="Mètriques per prioritat inicial">
+          <Box>
+            <Typography
+              variant="overline"
+              sx={{
+                color: colors.green,
+                fontWeight: 800,
+                letterSpacing: '0.15em',
+              }}
+            >
+              LECTURA PER GRUPS
+            </Typography>
+            <Typography component="h2" variant="h5">
+              Resultats per prioritat inicial
+            </Typography>
+            <Typography color="text.secondary">
+              Com varia l'espera de les tasques segons la prioritat que tenien
+              en arribar?
+            </Typography>
+          </Box>
+          <TableContainer
+            component={Paper}
+            variant="outlined"
+            sx={{ overflowX: 'auto' }}
+          >
+            <Table
+              size="small"
+              aria-label="Mètriques per prioritat inicial"
+              sx={{ minWidth: 640 }}
+            >
               <TableHead>
                 <TableRow>
                   <TableCell>Política</TableCell>
@@ -160,7 +331,7 @@ export function ComparisonPage() {
                   run.metrics.byInitialPriority.map((group) => (
                     <TableRow key={`${run.runId}-${group.initialPriority}`}>
                       <TableCell component="th" scope="row">
-                        {policyName(run.policy)}
+                        <PolicyLabel run={run} />
                       </TableCell>
                       <TableCell align="right">
                         {group.initialPriority}
@@ -181,12 +352,10 @@ export function ComparisonPage() {
             </Table>
           </TableContainer>
           <PriorityWaitingChart runs={comparison.data.runs} />
-          <Link
-            component={RouterLink}
-            to={`/scenarios/${encodeURIComponent(comparison.data.scenarioSnapshot.id)}`}
-          >
-            Veure l'escenari utilitzat
-          </Link>
+          <TaskTimeline
+            runs={comparison.data.runs}
+            workerCount={comparison.data.scenarioSnapshot.workers.count}
+          />
         </>
       )}
     </Stack>

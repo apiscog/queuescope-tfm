@@ -1,9 +1,11 @@
 import type { PolicyConfiguration, PolicyId } from '@queuescope/contracts';
 
+import { colors } from './theme';
+
 export const policyColors: Record<PolicyId, string> = {
-  fifo: '#1565c0',
-  'strict-priority': '#b54708',
-  'priority-aging': '#7b1fa2',
+  fifo: colors.fifo,
+  'strict-priority': colors.priority,
+  'priority-aging': colors.aging,
 };
 
 export function policyName(policy: PolicyConfiguration): string {

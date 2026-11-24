@@ -75,7 +75,7 @@ scripts/                  Automatitzacions reproduïbles
 | 5. API i persistència      | Completada | Escenaris, comparacions, previsualització, migracions i persistència verificats            |           |               |
 | 6. Interfície funcional    | Completada | Flux web de creació, previsualització, comparació i recuperació verificat                  |           |               |
 | 7. Visualització           | Completada | Dos gràfics interpretables verificats amb les taules de valors exactes                     |           |               |
-| 8. Identitat visual        | Pendent    |                                                                                            |           |               |
+| 8. Identitat visual        | Completada | Marca, quatre rutes, línia temporal, reproducció i revisió mòbil verificades               |           |               |
 | 9. Qualitat i desplegament | Pendent    |                                                                                            |           |               |
 | 10. Entrega                | Pendent    |                                                                                            |           |               |
 | 11. Vídeo                  | Pendent    |                                                                                            |           |               |

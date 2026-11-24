@@ -1,5 +1,6 @@
 import {
   Alert,
+  Box,
   Button,
   Card,
   CardContent,
@@ -20,16 +21,35 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { createComparison } from './api';
+import { colors } from './theme';
 
-const policyOptions: Array<{ id: PolicyId; label: string }> = [
-  { id: 'fifo', label: 'FIFO: primer en arribar, primer en executar' },
+const policyOptions: Array<{
+  id: PolicyId;
+  title: string;
+  description: string;
+  color: string;
+  index: string;
+}> = [
+  {
+    id: 'fifo',
+    title: 'FIFO',
+    description: 'Primer en arribar, primer en executar',
+    color: colors.fifo,
+    index: '01',
+  },
   {
     id: 'strict-priority',
-    label: 'Prioritat estricta: primer la prioritat més alta',
+    title: 'Prioritat estricta',
+    description: 'Primer la prioritat més alta',
+    color: colors.priority,
+    index: '02',
   },
   {
     id: 'priority-aging',
-    label: 'Prioritat amb envelliment: la prioritat puja en espera',
+    title: 'Prioritat amb envelliment',
+    description: 'La prioritat puja durant l’espera',
+    color: colors.aging,
+    index: '03',
   },
 ];
 
@@ -84,27 +104,96 @@ export function PolicyPicker({ scenarioId }: { scenarioId: string }) {
 
   return (
     <Card variant="outlined">
-      <CardContent>
-        <Stack spacing={2}>
-          <Typography component="h2" variant="h5">
-            Compara polítiques
-          </Typography>
-          <Typography color="text.secondary">
-            Cada política rebrà la mateixa instantània de tasques i workers.
-          </Typography>
-          <FormGroup>
-            {policyOptions.map((option) => (
-              <FormControlLabel
-                key={option.id}
-                control={
-                  <Checkbox
-                    checked={selected.includes(option.id)}
-                    onChange={() => toggle(option.id)}
-                  />
-                }
-                label={option.label}
-              />
-            ))}
+      <CardContent sx={{ p: { xs: 2.5, sm: 4 } }}>
+        <Stack spacing={3}>
+          <Box>
+            <Typography
+              variant="overline"
+              sx={{
+                color: colors.green,
+                fontWeight: 800,
+                letterSpacing: '0.15em',
+              }}
+            >
+              03 / COMPARA
+            </Typography>
+            <Typography component="h2" variant="h5">
+              Tria les polítiques
+            </Typography>
+            <Typography color="text.secondary">
+              Selecciona almenys dues opcions. Cada política rebrà exactament la
+              mateixa càrrega de tasques i workers.
+            </Typography>
+          </Box>
+          <FormGroup
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: {
+                xs: '1fr',
+                md: 'repeat(3, minmax(0, 1fr))',
+              },
+              gap: 2,
+            }}
+          >
+            {policyOptions.map((option) => {
+              const active = selected.includes(option.id);
+              return (
+                <Card
+                  key={option.id}
+                  variant="outlined"
+                  sx={{
+                    borderColor: active ? option.color : colors.line,
+                    borderWidth: active ? 2 : 1,
+                    bgcolor: active ? '#FAFCF9' : '#FFFFFF',
+                    height: '100%',
+                  }}
+                >
+                  <CardContent sx={{ p: 2.5 }}>
+                    <Stack spacing={1.5}>
+                      <Typography
+                        sx={{
+                          fontFamily: 'ui-monospace, monospace',
+                          fontSize: 12,
+                          fontWeight: 800,
+                          color: option.color,
+                        }}
+                      >
+                        {option.index} / POLÍTICA
+                      </Typography>
+                      <FormControlLabel
+                        sx={{
+                          m: 0,
+                          alignItems: 'flex-start',
+                          '& .MuiFormControlLabel-label': { pt: 0.7 },
+                        }}
+                        control={
+                          <Checkbox
+                            checked={active}
+                            onChange={() => toggle(option.id)}
+                            sx={{
+                              color: option.color,
+                              '&.Mui-checked': { color: option.color },
+                            }}
+                          />
+                        }
+                        label={
+                          <Stack spacing={0.5}>
+                            <Typography
+                              sx={{ fontWeight: 750, lineHeight: 1.25 }}
+                            >
+                              {option.title}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {option.description}
+                            </Typography>
+                          </Stack>
+                        }
+                      />
+                    </Stack>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </FormGroup>
           {selected.includes('priority-aging') && (
             <TextField
@@ -127,6 +216,7 @@ export function PolicyPicker({ scenarioId }: { scenarioId: string }) {
             variant="contained"
             onClick={launch}
             disabled={comparison.isPending}
+            sx={{ alignSelf: 'flex-start' }}
           >
             {comparison.isPending
               ? 'Executant la comparació…'
