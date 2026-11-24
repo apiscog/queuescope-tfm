@@ -119,4 +119,4 @@ La prioritat amb envelliment ha produït el mateix ordre i les mateixes mètriqu
 
 Les dues migracions s'han aplicat correctament des de zero en un esquema aïllat del PostgreSQL local. La comprovació de Prisma ha confirmat que l'esquema estava actualitzat i l'esquema temporal s'ha eliminat després de la prova. També han passat el format, el lint, la comprovació de tipus, les 83 proves automatitzades i la compilació. Les proves HTTP cobreixen la creació d'un escenari, l'execució de dues polítiques sobre la mateixa instantània i la recuperació del resultat. La prova manual amb PostgreSQL real ha verificat la creació, la consulta i la persistència després de reiniciar l'API.
 
-La configuració de Prisma separa `DATABASE_URL` i `DIRECT_URL`. L'aplicació de les migracions a Neon queda per a la fase 8, quan es prepari el desplegament i el flux web local ja funcioni.
+La configuració de Prisma separa `DATABASE_URL` i `DIRECT_URL`. L'aplicació de les migracions a Neon queda per a la fase 9, quan es prepari el desplegament i el flux web local ja funcioni.

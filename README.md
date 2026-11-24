@@ -65,16 +65,17 @@ scripts/                  Automatitzacions reproduïbles
 
 ## Progrés
 
-| Fase                     | Estat      | Evidència                                                                                  | Bloquejos | Pròxima acció |
-| ------------------------ | ---------- | ------------------------------------------------------------------------------------------ | --------- | ------------- |
-| 0. Inicialització        | Completada | Instal·lació, format, lint, typecheck, tests, build, Compose i endpoints mínims verificats |           |               |
-| 1. Domini                | Completada | Contractes Zod, regles documentades, exemples JSON i proves automatitzades                 |           |               |
-| 2. Motor FIFO            | Completada | Temps virtual, cua d'esdeveniments, FIFO i 13 proves del motor                             |           |               |
-| 3. Polítiques            | Completada | Prioritat estricta, envelliment, factoria i 35 proves del motor                            |           |               |
-| 4. Generador i mètriques | Completada | Generació amb llavor, mètriques agregades, 58 proves del motor i 11 de contractes          |           |               |
-| 5. API i persistència    | Completada | Escenaris, comparacions, previsualització, migracions i persistència verificats            |           |               |
-| 6. Interfície funcional  | Completada | Flux web de creació, previsualització, comparació i recuperació verificat                  |           |               |
-| 7. Visualització         | Completada | Dos gràfics interpretables verificats amb les taules de valors exactes                     |           |               |
-| 8. Qualitat              | Pendent    |                                                                                            |           |               |
-| 9. Entrega               | Pendent    |                                                                                            |           |               |
-| 10. Vídeo                | Pendent    |                                                                                            |           |               |
+| Fase                       | Estat      | Evidència                                                                                  | Bloquejos | Pròxima acció |
+| -------------------------- | ---------- | ------------------------------------------------------------------------------------------ | --------- | ------------- |
+| 0. Inicialització          | Completada | Instal·lació, format, lint, typecheck, tests, build, Compose i endpoints mínims verificats |           |               |
+| 1. Domini                  | Completada | Contractes Zod, regles documentades, exemples JSON i proves automatitzades                 |           |               |
+| 2. Motor FIFO              | Completada | Temps virtual, cua d'esdeveniments, FIFO i 13 proves del motor                             |           |               |
+| 3. Polítiques              | Completada | Prioritat estricta, envelliment, factoria i 35 proves del motor                            |           |               |
+| 4. Generador i mètriques   | Completada | Generació amb llavor, mètriques agregades, 58 proves del motor i 11 de contractes          |           |               |
+| 5. API i persistència      | Completada | Escenaris, comparacions, previsualització, migracions i persistència verificats            |           |               |
+| 6. Interfície funcional    | Completada | Flux web de creació, previsualització, comparació i recuperació verificat                  |           |               |
+| 7. Visualització           | Completada | Dos gràfics interpretables verificats amb les taules de valors exactes                     |           |               |
+| 8. Identitat visual        | Pendent    |                                                                                            |           |               |
+| 9. Qualitat i desplegament | Pendent    |                                                                                            |           |               |
+| 10. Entrega                | Pendent    |                                                                                            |           |               |
+| 11. Vídeo                  | Pendent    |                                                                                            |           |               |

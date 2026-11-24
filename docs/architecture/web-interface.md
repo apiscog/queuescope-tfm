@@ -59,4 +59,4 @@ L'usuari ha tornat a l'escenari i ha executat les tres polítiques amb un interv
 
 Les quatre rutes inicials funcionen amb dades reals de l'API. El formulari té etiquetes, límits i missatges d'error, i les taules indiquen les unitats. `VITE_API_URL` configura l'adreça de l'API. Han passat el format, el lint, la comprovació de tipus, 90 proves automatitzades i la compilació. La prova manual ha recorregut la creació, la previsualització, el desament, la comparació i la recuperació després de recarregar el navegador.
 
-Vite avisa que el paquet JavaScript inicial supera 500 kB abans de comprimir. La compilació funciona i aquest avís es reserva per a la revisió de rendiment de la fase 8. Els gràfics i les visualitzacions comparatives corresponen a la fase 7.
+Vite avisa que el paquet JavaScript inicial supera 500 kB abans de comprimir. La compilació funciona i aquest avís es reserva per a la revisió de rendiment de la fase 9. Els gràfics i les visualitzacions comparatives corresponen a la fase 7.

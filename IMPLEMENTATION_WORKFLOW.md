@@ -255,7 +255,7 @@ Criterios de salida:
 - Reiniciar la API no elimina los resultados persistidos.
 - Las migraciones se aplican desde cero en PostgreSQL local y la configuración
   distingue la conexión de ejecución de la conexión directa para migraciones.
-  La aplicación real en Neon se verifica en la fase 8, junto al despliegue.
+  La aplicación real en Neon se verifica en la fase 9, junto al despliegue.
 
 ### Fase 6. Primera interfaz web funcional
 
@@ -317,7 +317,106 @@ Criterios de salida:
 - No hay gráficos decorativos ni métricas redundantes.
 - El flujo continúa siendo demostrable en pocos minutos.
 
-### Fase 8. Despliegue gratuito, endurecimiento y calidad
+### Fase 8. Identidad visual y experiencia de simulación
+
+Objetivo: dar a QueueScope una identidad propia y hacer que el funcionamiento
+de una cola de tareas se entienda visualmente, sin perder claridad académica ni
+alterar los resultados de la simulación.
+
+Dirección visual acordada:
+
+- Inspirarse en la claridad editorial, la retícula, los diagramas lineales y
+  las transiciones paso a paso de `designed-to-scale.vercel.app`, sin copiar su
+  composición, ilustraciones, marca ni recursos.
+- Presentar QueueScope como un laboratorio de decisiones sobre tareas y
+  workers. Usar una base clara de tonos cálidos, texto oscuro, superficies
+  definidas y un acento reconocible para acciones principales.
+- Conservar los colores actuales de las políticas en tablas y gráficos:
+  azul para FIFO, naranja para prioridad estricta y violeta para envejecimiento.
+  Añadir nombres y etiquetas para no depender solo del color.
+- Combinar una tipografía legible para texto y una de estilo monoespaciado para
+  identificadores, ticks y valores. Definir escala, espaciado, bordes, radios,
+  sombras y estados dentro del tema de Material UI.
+- Diseñar un logotipo SVG original: varias cajas alineadas que avanzan hacia
+  un worker o punto de servicio. Preparar versiones horizontal, compacta e
+  icono. Debe reconocerse a tamaño pequeño y funcionar sin movimiento.
+
+Propuesta visual inicial para validar antes de programar:
+
+- Fondo marfil cálido, tarjetas claras y tinta grafito. Reservar un verde
+  suave para la acción principal y los estados de avance. Mantener el azul,
+  naranja y violeta de las políticas solo para identificarlas y compararlas.
+- Usar una retícula discreta y trazos SVG para sugerir flujo y profundidad.
+  Las cajas pueden tener una perspectiva isométrica ligera, sin convertir la
+  interfaz en una escena física. Priorizar espacio, jerarquía y contraste.
+- `/`: cabecera con marca y navegación real, introducción breve con un
+  diagrama de cola, acción clara de crear escenario y tarjetas de escenarios
+  con tareas, workers y origen legibles.
+- `/scenarios/new`: formulario y previsualización en dos columnas en escritorio
+  y una columna en móvil. Mostrar primero las decisiones principales y dejar
+  los rangos avanzados claramente agrupados, sin ocultar su valor.
+- `/scenarios/:id`: resumen visual de la carga, tabla de tareas y tarjetas de
+  políticas con estados de selección claros antes de ejecutar.
+- `/comparisons/:id`: resumen de métricas, gráficos existentes, tablas exactas
+  y un panel explicativo del recorrido de tareas. Mantener una anotación que
+  explique un compromiso observado solo para ese escenario.
+
+Esquema conceptual de la escena:
+
+```text
+cajas que llegan → cola pendiente → workers disponibles → tareas completadas
+      tick de llegada       orden elegido       inicio y fin virtual
+```
+
+Trabajo por bloques con revisión manual del usuario entre bloques:
+
+1. Definir una guía visual breve y bocetos de las cuatro rutas actuales en
+   escritorio y móvil. Revisar jerarquía, navegación y lenguaje de los botones.
+2. Crear el sistema visual compartido: tema Material UI, logotipo SVG,
+   cabecera y navegación coherentes, tarjetas, botones, campos, tablas y
+   mensajes de carga, vacío y error.
+3. Rediseñar el recorrido completo para que el escenario, la configuración,
+   la comparación y el resultado se perciban como pasos de un mismo proceso.
+   Evitar enlaces a pantallas que no existen.
+4. Preparar una escena explicativa de la cola con SVG y CSS: cajas para tareas,
+   carriles para workers y una línea de tiempo virtual. Usar solo datos del
+   escenario y de los resultados persistidos. Evaluar una reproducción
+   controlada con iniciar, pausar y avanzar un evento si ayuda a explicar por
+   qué cambia el orden entre políticas.
+5. Añadir microinteracciones breves y con propósito para selección, cambio de
+   estado y navegación. Respetar `prefers-reduced-motion` y ofrecer siempre
+   una lectura estática equivalente.
+6. Comprobar tamaños de pantalla pequeños y grandes, teclado, foco visible,
+   contraste, etiquetas, tiempos de carga y legibilidad de las tablas y los
+   gráficos. Repetir la prueba manual completa con `APScenario01`.
+
+Decisión técnica antes de añadir motores visuales:
+
+- El motor de planificación sigue siendo TypeScript puro y no se modifica
+  para producir animaciones. Una reproducción visual debe leer los tiempos de
+  llegada, inicio y fin ya calculados, sin volver a decidir qué tarea ejecutar.
+- SVG y CSS son la primera opción para cajas, diagramas y movimiento 2D. Solo
+  evaluar Matter.js, React Three Fiber o PlayCanvas React con un prototipo
+  medible si aportan una explicación que no se logra con el modelo 2D. La
+  gravedad y las colisiones no forman parte del modelo de colas.
+- Mantener un presupuesto de rendimiento: cargar la escena solo donde se usa,
+  medir el peso añadido y evitar que el rediseño dificulte el despliegue gratis.
+
+Criterios de salida:
+
+- Existe una identidad visual coherente en las cuatro rutas, con logotipo
+  original, navegación clara y componentes consistentes en escritorio y móvil.
+- El usuario puede distinguir visualmente las etapas del recorrido y completar
+  el flujo sin instrucciones externas.
+- Toda representación de tareas, workers y tiempo coincide con los datos
+  persistidos. Las tablas siguen mostrando los valores exactos.
+- El movimiento se puede pausar o reducir, no es necesario para entender la
+  información y no se confunde con el tiempo de ejecución real.
+- El usuario ha validado manualmente cada bloque visual y el recorrido final.
+- Formato, lint, tipos, pruebas y compilación siguen pasando. El tamaño de
+  descarga y las limitaciones visuales quedan documentados.
+
+### Fase 9. Despliegue gratuito, endurecimiento y calidad
 
 Objetivo: convertir el prototipo integrado en una entrega estable.
 
@@ -355,7 +454,7 @@ Criterios de salida:
 - No aparece ningún secreto en Git, Vercel ni el bundle servido al navegador.
 - El arranque en frío no se confunde con una métrica del motor.
 
-### Fase 9. Documentación y material de entrega
+### Fase 10. Documentación y material de entrega
 
 Objetivo: asegurar que el producto pueda evaluarse y reproducirse.
 
@@ -399,7 +498,7 @@ Criterios de salida:
 - Todos los materiales necesarios están incluidos.
 - La versión desplegada coincide con el commit utilizado para generar el ZIP.
 
-### Fase 10. Vídeo demostrativo de 2 a 5 minutos
+### Fase 11. Vídeo demostrativo de 2 a 5 minutos
 
 Objetivo: mostrar el valor y el funcionamiento real del producto de forma
 directa.
@@ -458,9 +557,10 @@ Mantener una tabla como esta en el README o en un documento de seguimiento:
 | 5. API y persistencia | Pendiente |  |  |  |
 | 6. Interfaz funcional | Pendiente |  |  |  |
 | 7. Visualización | Pendiente |  |  |  |
-| 8. Calidad | Pendiente |  |  |  |
-| 9. Entrega | Pendiente |  |  |  |
-| 10. Vídeo | Pendiente |  |  |  |
+| 8. Identidad visual | Pendiente |  |  |  |
+| 9. Calidad y despliegue | Pendiente |  |  |  |
+| 10. Entrega | Pendiente |  |  |  |
+| 11. Vídeo | Pendiente |  |  |  |
 
 Estados permitidos: `Pendiente`, `En curso`, `Bloqueada` y `Completada`.
 
