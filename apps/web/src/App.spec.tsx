@@ -245,6 +245,12 @@ describe('interfície d’escenaris', () => {
     expect(
       screen.getByRole('table', { name: 'Comparació de mètriques' }),
     ).toBeTruthy();
+    expect(
+      screen.getByRole('img', { name: "Temps d'espera per política" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole('img', { name: 'Espera mitjana per prioritat inicial' }),
+    ).toBeTruthy();
   });
 
   it('no permet executar només una política', async () => {
